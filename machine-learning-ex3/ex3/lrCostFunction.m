@@ -46,7 +46,7 @@ summation_theta = ((summation_theta*lambda)/(2*m));
 J = summation_cost + summation_theta;
 
 %grad = sum(X * sum(sigmoid(X*theta).-y));
-grad = sum(X * sum(sigmoid(X*theta)-y));
+grad = X' * (sigmoid(X*theta)-y);
 grad = grad/m;
 
 temp = theta;
