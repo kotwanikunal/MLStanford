@@ -27,19 +27,16 @@ m = size(X, 1);
          
 % You need to return the following variables correctly 
 J = 0;
+cost = 0;
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
 K = max(y);
 Y = zeros(m, K);
 
-X = [ones(m, 1) X];
-
  for i=1:m
 	Y(i,y(i)) = 1;
  endfor;
  
- A2 = 0;
- A3 = 0;
  
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
@@ -51,22 +48,20 @@ X = [ones(m, 1) X];
 %         computed in ex4.m
 %
 
-for i=1:K
-	A2 = A2 + ((-y(i).*log(ZZZ(i,:)))-((1-y(i)).*log(1-ZZZ(i,:))));
-endfor;
-
-for i=1:K
-	Z2 = sigmoid(X*Theta1');
-	A2 = A2 + ((-y(i).*log(Z2))-((1-y(i)).*log(1-Z2)));
-endfor;
-A2 = A2/m;
-
+X = [ones(m, 1) X];
+Z2 = X * Theta1';
+A2 = sigmoid(Z2);
 A2 = [ones(m, 1) A2];
+Z3 = A2 * Theta2';
+A3 = sigmoid(Z3);
+cost = cost + ((-Y.*log(A3))-((1-Y).*log(1-A3)));
+cost = sum(sum(cost)/m);
 
-for i=1:K
-	A3 = A3 + ((-y(i).*log(sigmoid(A2*Theta2')))-((1-y(i)).*log(1-sigmoid(A2*Theta2'))));
-endfor;
-A3 = A3/m;
+sum_theta1 = sum(sum(Theta1(:,2:end).^2));
+sum_theta2 = sum(sum(Theta2(:,2:end).^2));
+sum_theta = (((sum_theta1+sum_theta2)*lambda)/(2*m));
+
+J = cost + sum_theta;
 
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
@@ -83,6 +78,9 @@ A3 = A3/m;
 %               over the training examples if you are implementing it for the 
 %               first time.
 %
+
+
+
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
