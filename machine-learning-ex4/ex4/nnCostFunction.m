@@ -82,11 +82,18 @@ J = cost + sum_theta;
 delta_3 = A3 .- Y;
 Theta2_t = Theta2(:,2:end);
 delta_2 = (Theta2_t'*delta_3')'.*sigmoidGradient(Z2);
-D2 = 0;
-D2 = D2 + delta_3'*A2(:,2:end)';
+Theta2_grad = Theta2_grad .+ delta_3'*A2;
+Theta1_grad = Theta1_grad .+ delta_2'*X;
 
-Theta1_t = Theta1(:,2:end);
-delta_1 = (Theta1_t'*delta_2')'.*sigmoidGradient(Z2);
+Theta1_reg =  Theta1;
+Theta2_reg = Theta2;
+Theta1_reg(:,1) = 0;
+Theta2_reg(:,1) = 0;
+
+Theta1_grad = (Theta1_grad+(lambda*Theta1_reg))/m;
+Theta2_grad = (Theta2_grad+(lambda*Theta2_reg))/m;
+
+grad = [Theta1_grad(:); Theta2_grad(:)];
 
 % Part 3: Implement regularization with the cost function and gradients.
 %
@@ -95,7 +102,6 @@ delta_1 = (Theta1_t'*delta_2')'.*sigmoidGradient(Z2);
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
-
 
 
 
